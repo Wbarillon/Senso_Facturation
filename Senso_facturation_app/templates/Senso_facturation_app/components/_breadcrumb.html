@@ -1,0 +1,13 @@
+{% comment %}
+    This breadcrumb is quite simple and robust. However, it doesn't work with name that have spaces. For instance, Home > État du jardin > cabane 2 doesn't work.
+    Home > État du jardin > cabane-2 works.
+{% endcomment %}
+
+{% url 'index' as index %}
+
+
+{% if request.path != index %}
+<div class="breadcrumb">
+    <a href="{% url 'index' %}"><span class="material-icons-round">home</span></a>
+{% endif %}
+</div>

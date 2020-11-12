@@ -1,0 +1,146 @@
+/* Resets */
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    font-size: 62.5%;
+    height: 100%;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+p, h1, h2, h3 {
+    margin: 0;
+}
+
+button, input[type=submit] {
+    padding: 0;
+    background:transparent;
+    border: none;
+}
+
+input[type=radio] {
+    visibility: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+/* Fonts import */
+
+@import url('https://fonts.googleapis.com/css?family=Asap|Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Asap&display=swap');
+
+/* Header style */
+
+header {
+    font-family: 'Asap', sans-serif;
+}
+
+#header-container {
+    display: flex;
+    align-items: center;
+}
+
+#menu-burger {
+    font-size: 3rem;
+    margin-left: 5%;
+}
+@media all and (min-width:51rem) {
+    #menu-burger {
+        display: none;
+    }
+    #desktop-menu {
+        display: block !important;
+    }
+}
+
+#logo {
+    flex: 1;
+    margin: 3vh 6%;
+    font-size: 2.5rem;
+    color: black;
+    display: table;
+}
+
+#version {
+    margin: 0 3%;
+    color: #3A7CEF;
+    font-weight: bold;
+}
+
+#desktop-menu {
+    display: none;
+    border-top: solid 1px #EAE5E5;
+}
+
+#desktop-menu a {
+    font-size: 1.8rem;
+    color: black;
+    display: inline-block;
+    padding: 3vh 5%;
+    border-right: solid 1px #EAE5E5;
+}
+
+#mobile-menu {
+    position: absolute;
+    background-color:white;
+    border-right: solid 1px #EAE5E5;
+    width: 70%;
+    height: 100%;
+    top: 0;
+    display: none;
+    justify-content: space-around;
+}
+
+#mobile-menu nav {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.8rem;
+}
+
+#mobile-menu nav a {
+    padding: 2vh;
+    color: black;
+}
+
+#mobile-menu span {
+    padding: 2vh;
+    display: table;
+}
+
+/* Breadcrumb style */
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+    justify-content: left;
+    font-family: 'Poppins', sans-serif;
+}
+
+.breadcrumb a {
+    padding: 1vh;
+}
+
+.breadcrumb span {
+    display: block;
+    margin: 0 1%;
+}
+
+.breadcrumb span:not(:first-child) {
+    font-size: 2.5rem;
+}

@@ -310,13 +310,11 @@ class Facture(models.Model):
     def __int__(self):
         return self.numero_facture
 
-    def generer_numero_facture:
+    def generer_numero_facture(self):
         if self.emetteur == "Asso":
-            self.dernier_numero_facture_asso += 1
-            self.numero_facture = self.dernier_numero_facture_asso
+            self.numero_facture = self.dernier_numero_facture_asso + 1
         elif self.emetteur == "Senso":
-            self.dernier_numero_facture_senso += 1
-            self.numero_facture = self.dernier_numero_facture_senso
+            self.numero_facture = self.dernier_numero_facture_senso + 1
 
     class Meta:
         verbose_name = "Facture"

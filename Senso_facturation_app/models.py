@@ -93,6 +93,12 @@ class Personne(models.Model):
     date_naissance = models.DateField(
         verbose_name="Date de naissance", null=True, blank=True
     )
+    assujettie_taxe_sejour = models.BooleanField(
+        verbose_name="Assujettie à la taxe de séjour", null=True, blank=True
+    )
+    alimentation = models.TextField(verbose_name="Alimentation", null=True, blank=True)
+    medicament = models.TextField(verbose_name="Médicament", null=True, blank=True)
+    remarques = models.TextField(verbose_name="Remarques", null=True, blank=True)
 
     def __str__(self):
         return self.nom_personne
@@ -120,12 +126,6 @@ class Personne_Facture(models.Model):
         null=True,
         blank=True,
     )
-    assujettie_taxe_sejour = models.BooleanField(
-        verbose_name="Assujettie à la taxe de séjour", null=True, blank=True
-    )
-    alimentation = models.TextField(verbose_name="Alimentation", null=True, blank=True)
-    medicament = models.TextField(verbose_name="Médicament", null=True, blank=True)
-    remarques = models.TextField(verbose_name="Remarques", null=True, blank=True)
 
 
 class Service_Produit(models.Model):
@@ -287,6 +287,38 @@ class Facture(models.Model):
     numero_commande = models.CharField(
         verbose_name="Numéro de la commande", max_length=50, null=True, blank=True
     )
+     date_arrivee = models.DateField(
+        verbose_name="Date d'arrivée", null=True, blank=True
+    )
+    date_depart = models.DateField(
+        verbose_name="Date de départ", null=True, blank=True
+    )
+    montant_paiement_arrhes = models.DecimalField(
+        verbose_name="Montant des arrhes",
+        max_digits=8,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    modes_paiement_arrhes = models.TextField(
+        verbose_name="Modes de paiement des arrhes", null=True, blank=True
+    )
+    date_paiement_arrhes = models.DateField(
+        verbose_name="Date de paiement des arrhes", null=True, blank=True
+    )
+    montant_paiement_solde = models.DecimalField(
+        verbose_name="Montant du solde",
+        max_digits=8,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    modes_paiement_solde = models.TextField(
+        verbose_name="Modes de paiement du solde", null=True, blank=True
+    )
+    date_paiement_solde = models.DateField(
+        verbose_name="Date de paiement du solde", null=True, blank=True
+    )
     total = models.DecimalField(
         verbose_name="Total Facture",
         max_digits=8,
@@ -294,17 +326,6 @@ class Facture(models.Model):
         null=True,
         blank=True,
     )
-    reste_a_payer = models.DecimalField(
-        verbose_name="Reste à payer",
-        max_digits=8,
-        decimal_places=2,
-        null=True,
-        blank=True,
-    )
-    date_arrivee = models.DateField(
-        verbose_name="Date d'arrivée", null=True, blank=True
-    )
-    date_depart = models.DateField(verbose_name="Date de départ", null=True, blank=True)
     remarques = models.TextField(verbose_name="Remarques", null=True, blank=True)
 
     def __int__(self):

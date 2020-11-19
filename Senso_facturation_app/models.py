@@ -258,6 +258,7 @@ class Facture(models.Model):
     id = models.AutoField(primary_key=True)
     emetteur = models.CharField(
         verbose_name="Emetteur de la facture",
+        max_length = 5,
         choices=[("", ""), ("Asso", "Association"), ("Senso", "Sensoryalis")],
         default="",
     )
@@ -287,7 +288,7 @@ class Facture(models.Model):
     numero_commande = models.CharField(
         verbose_name="Numéro de la commande", max_length=50, null=True, blank=True
     )
-     date_arrivee = models.DateField(
+    date_arrivee = models.DateField(
         verbose_name="Date d'arrivée", null=True, blank=True
     )
     date_depart = models.DateField(

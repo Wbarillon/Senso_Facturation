@@ -5,6 +5,7 @@ from .models import *
 
 # Register your models here.
 
+'''
 @admin.register(Personne)
 class PersonneResource(ImportExportModelAdmin):
     list_display = ['id', 'nom_personne', 'naissance_date', 'alimentation', 'medicament', 'remarques']
@@ -24,3 +25,4 @@ class CommandeResource(ImportExportModelAdmin):
 @admin.register(Sejour)
 class SejourResource(ImportExportModelAdmin):
     list_display = ['id', 'id_commande', 'arrivee_date', 'depart_date']
+'''

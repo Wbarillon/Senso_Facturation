@@ -2,6 +2,13 @@
 
 {% block content %}
     <main id="index-main">
-
+        <form action="" method="POST" class="recap">{% csrf_token %}
+            {{ formset.management_form }}
+            {{ formset.as_p }}
+            <div>
+                <button name="oui" value="oui">Ajouter un service supplémentaire</button>
+                <button name="non" value="non">Passer au récapitulatif</button>
+            </div>
+        </form>
     </main>
 {% endblock %}

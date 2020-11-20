@@ -88,7 +88,15 @@ class Service_Produit_CommandeResource(ImportExportModelAdmin):
 
 @admin.register(Taxe)
 class TaxeResource(ImportExportModelAdmin):
-    list_display = ["id", "nom_taxe", "initiales", "taux", "mini", "montant_fixe"]
+    list_display = [
+        "id",
+        "nom_taxe",
+        "initiales",
+        "type_taxe",
+        "taux",
+        "mini",
+        "montant_fixe",
+    ]
 
 
 @admin.register(Taxe_Service_Produit)

@@ -289,6 +289,20 @@ class Taxe(models.Model):
     initiales = models.CharField(
         verbose_name="Initiales", max_length=10, null=True, blank=True
     )
+    type_taxe = models.CharField(
+        verbose_name="Type de taxe",
+        max_length=30,
+        choices=[
+            ("", ""),
+            ("Taux_Sans_Mini", "Taux sans minimum"),
+            ("Taux_Avec_Mini_Par_Jour", "Taux avec minimum par jour"),
+            ("Taux_Avec_Mini_Global", "Taux avec minimum global"),
+            ("Montant_Fixe_Par_Jour", "Montant fixe par jour"),
+            ("Montant_Fixe_Global", "Montant fixe global"),
+            ("Type_Taxe_De_Sejour", "Type taxe de séjour"),
+        ],
+        default="",
+    )
     taux = models.DecimalField(
         verbose_name="Taux", max_digits=4, decimal_places=2, null=True, blank=True
     )

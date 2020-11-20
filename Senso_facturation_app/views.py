@@ -40,7 +40,7 @@ def index(request):
 
     #form = AddService(request.POST or None)
 
-    formset_extra = 1
+    formset_extra = 3
 
     AddServiceFormSet = formset_factory(AddService, extra = formset_extra, can_delete = False)
 
@@ -56,29 +56,17 @@ def index(request):
         }
     ])
     '''
-    '''
-    formset = AddServiceFormSet(initial = [
-        for i in range(2):
-            {
-                'service-'+str(i): 'lol',
-                'paiement-'+str(i): 'mdr'
-            }
-    ])
-    '''
-
-    for i in range(2):
-        formset = AddServiceFormSet(initial = [
-            {
-                'form-'+str(i)+'service': 'lol',
-                'form-'+str(i)+'paiement': 'mdr'
-            }
-        ])
-
+    
+    #initial = [{'service': 'sauna', 'paiement': 'espèce'}, {'service': 'goûter', 'paiement': 'bisous'}]
+    #initial.append({'service': 'youpii'})
+    
+    
     for key in list(request.session.keys()):
         del request.session[key]
+    
 
     context = {
-        'formset': formset
+        'formset': AddServiceFormSet
     }
 
 
@@ -100,17 +88,20 @@ def index(request):
 
         data = {key: value for key, value in request.session.items()}
         print(data)
+
+        initial = []
+        for i in range(formset_extra):
+            for field in fields:
+                if 'form'+'-'+str(i)+'-'+field in data:
+                    print('form'+'-'+str(i)+'-'+field)
         
         AddServiceFormSet = formset_factory(AddService, extra = formset_extra)
         # Récupérer les données de data et les attribuer "à la bonne ligne"
         # Dans data, il y a plusieurs dictionnaire, formset_extra de dictionnaire pour être exacte
         # et les clés de dictionnaire sont déclarés plus haut dans fields
         # Objectif : créer une boucle qui déclare formset_extra dictionnaires avec les champs de fields
-        formset = AddServiceFormSet(initial = [
-            {
+        formset = AddServiceFormSet(initial = initial)
 
-            }
-        ])
         context.update({'formset': formset})
 
     '''

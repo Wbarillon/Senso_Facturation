@@ -90,7 +90,7 @@ class Facture(models.Model):
         choices=[("", ""), ("Asso", "Association"), ("Senso", "Sensoryalis")],
         default="",
     )
-    id_client = models.ForeignKey(
+    client = models.ForeignKey(
         "Client",
         on_delete=models.PROTECT,
         verbose_name="Client",
@@ -120,6 +120,9 @@ class Facture(models.Model):
         verbose_name="Date d'arrivée", null=True, blank=True
     )
     date_depart = models.DateField(verbose_name="Date de départ", null=True, blank=True)
+    nombre_jours = models.IntegerField(
+        verbose_name="Nombre de jours", null=True, blank=True
+    )
     montant_paiement_arrhes = models.DecimalField(
         verbose_name="Montant des arrhes",
         max_digits=8,
@@ -197,18 +200,17 @@ class Personne(models.Model):
 
 class Personne_Facture(models.Model):
     id = models.AutoField(primary_key=True)
-    id_personne = models.ForeignKey(
+    personne = models.ForeignKey(
         "Personne",
         on_delete=models.PROTECT,
-        verbose_name="Identifiant Personne",
-        related_name="personnes",
+        verbose_name="Personne",
         null=True,
         blank=True,
     )
-    id_facture = models.ForeignKey(
+    facture = models.ForeignKey(
         "Facture",
         on_delete=models.PROTECT,
-        verbose_name="Identifiant Facture",
+        verbose_name="Facture",
         null=True,
         blank=True,
     )
@@ -245,15 +247,14 @@ class Service_Produit(models.Model):
 
 class Service_Produit_Commande(models.Model):
     id = models.AutoField(primary_key=True)
-    id_service_produit = models.ForeignKey(
+    service_produit = models.ForeignKey(
         "Service_Produit",
         on_delete=models.PROTECT,
         verbose_name="Service commandé",
-        related_name="services",
         null=True,
         blank=True,
     )
-    id_facture = models.ForeignKey(
+    facture = models.ForeignKey(
         "Facture",
         on_delete=models.PROTECT,
         verbose_name="Facture",
@@ -295,10 +296,10 @@ class Taxe(models.Model):
         choices=[
             ("", ""),
             ("Taux_Sans_Mini", "Taux sans minimum"),
-            ("Taux_Avec_Mini_Par_Jour", "Taux avec minimum par jour"),
             ("Taux_Avec_Mini_Global", "Taux avec minimum global"),
-            ("Montant_Fixe_Par_Jour", "Montant fixe par jour"),
+            ("Taux_Avec_Mini_Par_Jour", "Taux avec minimum par jour"),
             ("Montant_Fixe_Global", "Montant fixe global"),
+            ("Montant_Fixe_Par_Jour", "Montant fixe par jour"),
             ("Type_Taxe_De_Sejour", "Type taxe de séjour"),
         ],
         default="",
@@ -323,15 +324,14 @@ class Taxe(models.Model):
 
 class Taxe_Service_Produit(models.Model):
     id = models.AutoField(primary_key=True)
-    id_service_produit = models.ForeignKey(
+    service_produit = models.ForeignKey(
         "Service_Produit",
         on_delete=models.PROTECT,
         verbose_name="Service/produit",
-        related_name="taxes",
         null=True,
         blank=True,
     )
-    id_taxe = models.ForeignKey(
+    taxe = models.ForeignKey(
         "Taxe",
         on_delete=models.PROTECT,
         verbose_name="Taxe Service/Produit",

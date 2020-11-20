@@ -22,7 +22,7 @@ class FactureResource(ImportExportModelAdmin):
     list_display = [
         "id",
         "emetteur",
-        "id_client",
+        "client",
         "dernier_numero_facture_asso",
         "dernier_numero_facture_senso",
         "numero_facture",
@@ -58,8 +58,8 @@ class PersonneResource(ImportExportModelAdmin):
 class Personne_FactureResource(ImportExportModelAdmin):
     list_display = [
         "id",
-        "id_personne",
-        "id_facture",
+        "personne",
+        "facture",
     ]
 
 
@@ -77,8 +77,8 @@ class Service_ProduitResource(ImportExportModelAdmin):
 class Service_Produit_CommandeResource(ImportExportModelAdmin):
     list_display = [
         "id",
-        "id_service_produit",
-        "id_facture",
+        "service_produit",
+        "facture",
         "quantite",
         "prix_total_ht",
         "remise",
@@ -101,4 +101,4 @@ class TaxeResource(ImportExportModelAdmin):
 
 @admin.register(Taxe_Service_Produit)
 class Taxe_Service_ProduitResource(ImportExportModelAdmin):
-    list_display = ["id", "id_service_produit", "id_taxe"]
+    list_display = ["id", "service_produit", "taxe"]

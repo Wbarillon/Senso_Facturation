@@ -34,72 +34,82 @@ def update(request):
         return HttpResponse("Couldn't update the code on PythonAnywhere")
 
 
-def index(request):
-    template_name = "webpages/index.html"
-
-"""
+def CalculerTotaux(numFacture):
     total = 0
+    totalHt = 0
+    totalTaxes = 0
     numFacture = "10000"
-    facture = Facture.objects.filter(id_facture=numFacture)
+    factures = Facture.objects.filter(numero_facture=numFacture)
+    facture = factures[0]
     nbJours = facture.nombre_jours
-    servicesCommandes = Service_Produit_Commande.objects.filter(id_facture=numFacture)
+    servicesCommandes = Service_Produit_Commande.objects.filter(facture_id=facture.id)
     for serviceCommande in servicesCommandes:
         quantite = serviceCommande.quantite
-        totalHt = serviceCommande.prix_total_ht - serviceCommande.remise
-        total += totalHt
-        totalTaxes = 0
+        totalHtService = serviceCommande.prix_total_ht - serviceCommande.remise
+        totalHt += totalHtService
         serviceProduit = serviceCommande.service_produit
         idServiceProduit = serviceProduit.id
-        taxesService = Taxe_Service_Produit.objects.filter(
-            service_produit__id_service_produit=idServiceProduit
-        )
-        for taxe in taxesService:
+        for taxe in serviceCommande.service_produit.taxes.all():
             if taxe.type_taxe == "Taux_Sans_Mini":
-                taxeAAjouter = totalHt * taxe.taux / 100
+                taxeAAjouter = totalHtService * taxe.taux / 100
             elif taxe.type_taxe == "Taux_Avec_Mini_Global":
-                if (totalHt * taxe.taux / 100) < taxe.mini:
+                if (totalHtService * taxe.taux / 100) < taxe.mini:
                     taxeAAjouter = taxe.mini
                 else:
-                    taxeAAjouter = totalHt * taxe.taux / 100
+                    taxeAAjouter = totalHtService * taxe.taux / 100
             elif taxe.type_taxe == "Taux_Avec_Mini_Par_Jour":
-                if (totalHt * taxe.taux / 100 / nbJours) < taxe.mini:
+                if (totalHtService * taxe.taux / 100 / nbJours) < taxe.mini:
                     taxeAAjouter = taxe.mini * nbJours
                 else:
-                    taxeAAjouter = totalHt * taxe.taux / 100
+                    taxeAAjouter = totalHtService * taxe.taux / 100
             elif taxe.type_taxe == "Montant_Fixe_Global":
-                taxeAAjouter = taxe.montant
+                taxeAAjouter = taxe.montant_fixe
             elif taxe.type_taxe == "Montant_Fixe_Par_Jour":
-                taxeAAjouter = taxe.montant * nbJours
+                taxeAAjouter = taxe.montant_fixe * nbJours
             elif taxe.type_taxe == "Type_Taxe_De_Sejour":
                 taxeAAjouter = 0
-                personnesFactures = Personne_Facture.objects.filter(
-                    facture__id_facture=numFacture
-                )
-                nbPersonnes = personnesFactures.length
+
+                nbPersonnes = len(facture.personnes.all())
                 nbPersonnesAssujetties = 0
-                for personneFacture in personnesFactures:
-                    if personneFacture.personne.assujettie_taxe_sejour:
+                for personne in facture.personnes.all():
+                    if personne.assujettie_taxe_sejour:
                         nbPersonnesAssujetties += 1
                 if nbPersonnesAssujetties > 0:
                     taxeAAjouter = (
-                        totalHt * taxe.taux / 100 / nbPersonnes * nbPersonnesAssujetties
+                        totalHtService
+                        * taxe.taux
+                        / 100
+                        / nbPersonnes
+                        * nbPersonnesAssujetties
                     )
 
             totalTaxes += taxeAAjouter
-        total += totalTaxes
-"""
 
-numFacture = "10000"
-totalHt = 850
-totalTaxes = 50
-total = 900
+    total = totalHt + totalTaxes
 
-    context = {
-        "num": numFacture,
+    resultat = {
+        "numFacture": numFacture,
         "totalHt": totalHt,
         "totalTaxes": totalTaxes,
         "total": total,
     }
+
+    return resultat
+
+
+def index(request):
+    template_name = "webpages/index.html"
+
+    context = CalculerTotaux("10000")
+
+    """
+    context = {
+        "numFacture": numFacture,
+        "totalHt": totalHt,
+        "totalTaxes": totalTaxes,
+        "total": total,
+    }
+    """
 
     return render(request, template_name, context)
 

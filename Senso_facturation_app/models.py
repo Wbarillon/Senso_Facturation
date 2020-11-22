@@ -98,6 +98,7 @@ class Facture(models.Model):
         null=True,
         blank=True,
     )
+    personnes = models.ManyToManyField("Personne", through="Personne_Facture")
     dernier_numero_facture_asso = models.IntegerField(
         verbose_name="Dernier numéro de facture Association",
         default=0,
@@ -236,6 +237,7 @@ class Service_Produit(models.Model):
         null=True,
         blank=True,
     )
+    taxes = models.ManyToManyField("Taxe", through="Taxe_Service_Produit")
 
     def __str__(self):
         return self.nom_service_produit

@@ -82,6 +82,8 @@ def CalculerTotaux(numFacture):
                         / nbPersonnes
                         * nbPersonnesAssujetties
                     )
+                    if (taxeAAjouter / nbJours) < taxe.mini:
+                        taxeAAjouter = taxe.mini * nbJours
 
             totalTaxes += taxeAAjouter
 
@@ -89,9 +91,9 @@ def CalculerTotaux(numFacture):
 
     resultat = {
         "numFacture": numFacture,
-        "totalHt": totalHt,
-        "totalTaxes": totalTaxes,
-        "total": total,
+        "totalHt": round(totalHt, 2),
+        "totalTaxes": round(totalTaxes, 2),
+        "total": round(total, 2),
     }
 
     return resultat

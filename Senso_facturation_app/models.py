@@ -110,8 +110,8 @@ class Facture(models.Model):
         null=True,
         blank=True,
     )
-    numero_facture = models.IntegerField(
-        verbose_name="Numéro de la facture", null=True, blank=True
+    numero_facture = models.CharField(
+        verbose_name="Numéro de la facture", max_length=30, null=True, blank=True
     )
     numero_commande = models.CharField(
         verbose_name="Numéro de la commande", max_length=50, null=True, blank=True
@@ -158,7 +158,7 @@ class Facture(models.Model):
     )
     remarques = models.TextField(verbose_name="Remarques", null=True, blank=True)
 
-    def __int__(self):
+    def __str__(self):
         return self.numero_facture
 
     def generer_numero_facture(self):

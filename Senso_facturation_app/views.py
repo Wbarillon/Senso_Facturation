@@ -37,8 +37,7 @@ def update(request):
 def index(request):
     template_name = "webpages/index.html"
 
-    context = {}
-
+"""
     total = 0
     numFacture = "10000"
     facture = Facture.objects.filter(id_facture=numFacture)
@@ -88,8 +87,19 @@ def index(request):
 
             totalTaxes += taxeAAjouter
         total += totalTaxes
+"""
 
-    context = {"Numéro de facture": numFacture, "Total HT": totalHt, "Total": total}
+numFacture = "10000"
+totalHt = 850
+totalTaxes = 50
+total = 900
+
+    context = {
+        "num": numFacture,
+        "totalHt": totalHt,
+        "totalTaxes": totalTaxes,
+        "total": total,
+    }
 
     return render(request, template_name, context)
 

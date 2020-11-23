@@ -34,17 +34,26 @@ def update(request):
         return HttpResponse("Couldn't update the code on PythonAnywhere")
 
 def index(request):
+    # Utilisation d'un modelformset comme sur la vidéo https://www.youtube.com/watch?v=JIvJL1HizP4
+    # Implique que les modèles soient clean
     template_name = 'webpages/index.html'
 
     fields = ['service', 'paiement']
 
-    #form = AddService(request.POST or None)
+    context = {
 
+    }
+
+    if request.method == 'POST':
+        ServiceCommandeFormset = modelformset_factory(Service_Produit_Commande)
+
+    #form = AddService(request.POST or None)
+    '''
     formset_extra = 3
 
     AddServiceFormSet = formset_factory(AddService, extra = formset_extra, can_delete = False)
 
-    '''
+    
     formset = AddServiceFormSet(initial = [
         {
             'service': '0bcda',
@@ -55,7 +64,7 @@ def index(request):
             'paiement': 'fsdf'
         }
     ])
-    '''
+    
     
     #initial = [{'service': 'sauna', 'paiement': 'espèce'}, {'service': 'goûter', 'paiement': 'bisous'}]
     #initial.append({'service': 'youpii'})
@@ -104,7 +113,7 @@ def index(request):
 
         context.update({'formset': formset})
 
-    '''
+    
     if request.POST.get('oui'):
 
         for field in fields:

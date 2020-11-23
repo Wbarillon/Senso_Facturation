@@ -17,14 +17,21 @@ class ClientResource(ImportExportModelAdmin):
     ]
 
 
+@admin.register(Dernier_Numero_Facture)
+class Dernier_Numero_FactureResource(ImportExportModelAdmin):
+    list_display = [
+        "id",
+        "facture_asso",
+        "facture_senso",
+    ]
+
+
 @admin.register(Facture)
 class FactureResource(ImportExportModelAdmin):
     list_display = [
         "id",
         "emetteur",
         "client",
-        "dernier_numero_facture_asso",
-        "dernier_numero_facture_senso",
         "numero_facture",
         "numero_commande",
         "date_arrivee",

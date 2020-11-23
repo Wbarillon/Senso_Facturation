@@ -21,6 +21,9 @@ class AddFacture(forms.Form):
         choice_clients.append((Client.id, Client.nom_client))
     client = forms.ChoiceField(choices=choice_clients, label="Client")
 
+    numero_facture = forms.CharField(
+        label="Numéro de la facture", max_length=30, disabled=True
+    )
     numero_commande = forms.CharField(label="Numéro de la commande", max_length=50)
 
     date_arrivee = forms.DateField(label="Date d'arrivée")
@@ -30,17 +33,21 @@ class AddFacture(forms.Form):
     nb_jours = forms.IntegerField(label="Nombre de jours")
 
     montant_arrhes = forms.DecimalField(label="Montant des arrhes", decimal_places=2)
-    modes_paiement_arrhes = forms.CharField(widget=forms.Textarea, label="Modes de paiement des arrhes")
+    modes_paiement_arrhes = forms.CharField(
+        widget=forms.Textarea, label="Modes de paiement des arrhes"
+    )
     date_paiement_arrhes = forms.DateField(label="Date de paiement des arrhes")
 
     montant_solde = forms.DecimalField(label="Montant du solde", decimal_places=2)
-    modes_paiement_solde = forms.CharField(widget=forms.Textarea, label="Modes de paiement du solde")
+    modes_paiement_solde = forms.CharField(
+        widget=forms.Textarea, label="Modes de paiement du solde"
+    )
     date_paiement_solde = forms.DateField(label="Date de paiement du solde")
 
     remarques = forms.CharField(widget=forms.Textarea, label="Remarques")
 
     question = forms.BooleanField(
-        label="Voulez-vous enregistrer cette facture ?",
+        label="Voulez-vous générer un numéro de facture ?",
         widget=forms.RadioSelect(
             choices=[("Oui", "Oui"), ("Non", "Non")], attrs={"class": "radio-check"}
         ),
@@ -50,17 +57,9 @@ class AddFacture(forms.Form):
     def __init__(self, *args, **kwargs):
 
         reponse = kwargs.pop("reponse")
+        numero_facture = kwargs.pop("numero_facture")
 
         super(AddFacture, self).__init__(*args, **kwargs)
 
-        """
         if reponse == "Oui":
-            self.fields["phase"] = forms.ChoiceField(
-                choices=PhaseCulturesChoix.choices,
-                required=False,
-            )
-
-            self.fields["phase_date"] = forms.DateField(
-                widget=DatePicker(), required=False
-            )
-        """
+            self.fields["numero_facture"].initial = numero_facture

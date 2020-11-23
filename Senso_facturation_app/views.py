@@ -100,22 +100,56 @@ def CalculerTotaux(facture):
 def index(request):
     template_name = "webpages/index.html"
 
-    form = AddFacture(request.POST or None, reponse=request.POST.get("question"))
+    if request.POST:
+        emetteur_facture = request.POST.get("emetteur_facture")
+        if emetteur_facture == "Asso":
+            numero_facture = str(
+                Dernier_Numero_Facture.objects.all()[0].facture_asso + 1
+            )
+        elif emetteur_facture == "Senso":
+            numero_facture = str(
+                Dernier_Numero_Facture.objects.all()[0].facture_senso + 1
+            )
+        else:
+            numero_facture = "0"
+    else:
+        numero_facture = "0"
 
-    # models = [Culture, PhaseCulture]
+    form = AddFacture(
+        request.POST or None,
+        reponse=request.POST.get("question"),
+        numero_facture=numero_facture,
+    )
 
-    # fields = ['type_contenant', 'nom', 'phase', 'phase_date']
+    fields = [
+        "emetteur_facture",
+        "client",
+        "numero_facture",
+        "numero_commande",
+        "date_arrivee",
+        "date_depart",
+        "nb_jours",
+        "montant_arrhes",
+        "modes_paiement_arrhes",
+        "date_paiement_arrhes",
+        "montant_solde",
+        "modes_paiement_solde",
+        "date_paiement_solde",
+        "remarques",
+        "question",
+    ]
 
     context = {"form": form}
 
-    if (request.POST.get("question") == "Non") and (request.POST.get(fields[-1]) == ""):
-        pass
+    """
+        for field in fields:
+            if request.POST.get(field) != None:
+                request.session.update({field: request.POST.get(field)})
+            else:
+                pass
 
-    elif (request.POST.get("question") == "Non") or (
-        (request.POST.get("question") == "Oui")
-        and (request.POST.get(fields[-1]) != None)
-    ):
-        pass
+        data = {key: value for key, value in request.session.items() if key in fields}
+    """
 
     """
     factures = Facture.objects.all()

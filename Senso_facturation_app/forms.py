@@ -57,3 +57,20 @@ class AddCulture(forms.Form):
                 widget = DatePicker(),
                 required = False
             )
+
+class ActualiserCulture(forms.ModelForm):
+
+    class Meta:
+        model = PhaseCulture
+        fields = ['phase', 'phase_date']
+        labels = {
+            'phase': PhaseCulture.phase.field.verbose_name,
+            'phase_date': PhaseCulture.phase_date.field.verbose_name
+        }
+        widgets = {
+            'phase': forms.RadioSelect(
+                choices = PhaseCulturesChoix.choices,
+                attrs = {'class': 'radio-check'}
+            ),
+            'phase_date': DatePicker()
+        }

@@ -104,18 +104,33 @@ def index(request):
 
     # models = [Culture, PhaseCulture]
 
-    # fields = ['type_contenant', 'nom', 'phase', 'phase_date']
+    fields = [
+        "emetteur_facture",
+        "client",
+        "numero_commande",
+        "date_arrivee",
+        "date_depart",
+        "nb_jours",
+        "montant_arrhes",
+        "modes_paiement_arrhes",
+        "date_paiement_arrhes",
+        "montant_solde",
+        "modes_paiement_solde",
+        "date_paiement_solde",
+        "remarques",
+        "question",
+    ]
 
     context = {"form": form}
 
-    if (request.POST.get("question") == "Non") and (request.POST.get(fields[-1]) == ""):
-        pass
+    if request.POST.get("question") == "Oui":
+        for field in fields:
+            if request.POST.get(field) != None:
+                request.session.update({field: request.POST.get(field)})
+            else:
+                pass
 
-    elif (request.POST.get("question") == "Non") or (
-        (request.POST.get("question") == "Oui")
-        and (request.POST.get(fields[-1]) != None)
-    ):
-        pass
+        data = {key: value for key, value in request.session.items() if key in fields}
 
     """
     factures = Facture.objects.all()

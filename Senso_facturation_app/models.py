@@ -184,6 +184,15 @@ class Personne(models.Model):
     date_naissance = models.DateField(
         verbose_name="Date de naissance", null=True, blank=True
     )
+    adresse_personne = models.CharField(
+        verbose_name="Adresse", max_length=200, null=True, blank=True
+    )
+    mail_personne = models.CharField(
+        verbose_name="Mail", max_length=100, null=True, blank=True
+    )
+    telephone_personne = models.CharField(
+        verbose_name="Téléphone", max_length=50, null=True, blank=True
+    )
     assujettie_taxe_sejour = models.BooleanField(
         verbose_name="Assujettie à la taxe de séjour", null=True, blank=True
     )

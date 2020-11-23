@@ -34,13 +34,10 @@ def update(request):
         return HttpResponse("Couldn't update the code on PythonAnywhere")
 
 
-def CalculerTotaux(numFacture):
+def CalculerTotaux(facture):
     total = 0
     totalHt = 0
     totalTaxes = 0
-    numFacture = "10000"
-    factures = Facture.objects.filter(numero_facture=numFacture)
-    facture = factures[0]
     nbJours = facture.nombre_jours
     servicesCommandes = Service_Produit_Commande.objects.filter(facture_id=facture.id)
     for serviceCommande in servicesCommandes:
@@ -67,29 +64,31 @@ def CalculerTotaux(numFacture):
             elif taxe.type_taxe == "Montant_Fixe_Par_Jour":
                 taxeAAjouter = taxe.montant_fixe * nbJours
             elif taxe.type_taxe == "Type_Taxe_De_Sejour":
-                taxeAAjouter = 0
                 nbPersonnes = len(facture.personnes.all())
-                nbPersonnesAssujetties = 0
-                for personne in facture.personnes.all():
-                    if personne.assujettie_taxe_sejour:
-                        nbPersonnesAssujetties += 1
-                if nbPersonnesAssujetties > 0:
-                    taxeAAjouter = (
-                        totalHtService
-                        * taxe.taux
-                        / 100
-                        / nbPersonnes
-                        * nbPersonnesAssujetties
-                    )
-                    if (taxeAAjouter / nbJours) < taxe.mini:
-                        taxeAAjouter = taxe.mini * nbJours
+                if nbPersonnes == 0 or nbJours == 0:
+                    taxeAAjouter = 0
+                else:
+                    nbPersonnesAssujetties = 0
+                    for personne in facture.personnes.all():
+                        if personne.assujettie_taxe_sejour:
+                            nbPersonnesAssujetties += 1
+                    if nbPersonnesAssujetties > 0:
+                        taxeAAjouter = (
+                            totalHtService
+                            * taxe.taux
+                            / 100
+                            / nbPersonnes
+                            * nbPersonnesAssujetties
+                        )
+                        if (taxeAAjouter / nbJours) < taxe.mini:
+                            taxeAAjouter = taxe.mini * nbJours
 
             totalTaxes += taxeAAjouter
 
     total = totalHt + totalTaxes
 
     resultat = {
-        "numFacture": numFacture,
+        "numFacture": facture.numero_facture,
         "totalHt": round(totalHt, 2),
         "totalTaxes": round(totalTaxes, 2),
         "total": round(total, 2),
@@ -101,9 +100,28 @@ def CalculerTotaux(numFacture):
 def index(request):
     template_name = "webpages/index.html"
 
-    context = CalculerTotaux("10000")
+    form = AddFacture(request.POST or None, reponse=request.POST.get("question"))
+
+    # models = [Culture, PhaseCulture]
+
+    # fields = ['type_contenant', 'nom', 'phase', 'phase_date']
+
+    context = {"form": form}
+
+    if (request.POST.get("question") == "Non") and (request.POST.get(fields[-1]) == ""):
+        pass
+
+    elif (request.POST.get("question") == "Non") or (
+        (request.POST.get("question") == "Oui")
+        and (request.POST.get(fields[-1]) != None)
+    ):
+        pass
 
     """
+    factures = Facture.objects.all()
+    facture = factures[0]
+    context = CalculerTotaux(facture)
+
     context = {
         "numFacture": numFacture,
         "totalHt": totalHt,

@@ -100,11 +100,28 @@ def CalculerTotaux(facture):
 def index(request):
     template_name = "webpages/index.html"
 
+    form = AddFacture(request.POST or None, reponse=request.POST.get("question"))
+
+    # models = [Culture, PhaseCulture]
+
+    # fields = ['type_contenant', 'nom', 'phase', 'phase_date']
+
+    context = {"form": form}
+
+    if (request.POST.get("question") == "Non") and (request.POST.get(fields[-1]) == ""):
+        pass
+
+    elif (request.POST.get("question") == "Non") or (
+        (request.POST.get("question") == "Oui")
+        and (request.POST.get(fields[-1]) != None)
+    ):
+        pass
+
+    """
     factures = Facture.objects.all()
     facture = factures[0]
     context = CalculerTotaux(facture)
 
-    """
     context = {
         "numFacture": numFacture,
         "totalHt": totalHt,

@@ -68,7 +68,6 @@ def CalculerTotaux(numFacture):
                 taxeAAjouter = taxe.montant_fixe * nbJours
             elif taxe.type_taxe == "Type_Taxe_De_Sejour":
                 taxeAAjouter = 0
-
                 nbPersonnes = len(facture.personnes.all())
                 nbPersonnesAssujetties = 0
                 for personne in facture.personnes.all():

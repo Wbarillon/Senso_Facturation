@@ -15,11 +15,14 @@ class AddFacture(forms.Form):
         label="Emetteur de la facture",
     )
 
+    # Gérer par le template
     clients = Client.objects.all()
+    '''
     choice_clients = []
     for client in clients:
         choice_clients.append((Client.id, Client.nom_client))
     client = forms.ChoiceField(choices=choice_clients, label="Client")
+    '''
 
     numero_facture = forms.CharField(
         label="Numéro de la facture", max_length=30, disabled=True

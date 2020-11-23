@@ -100,6 +100,8 @@ def CalculerTotaux(facture):
 def index(request):
     template_name = "webpages/index.html"
 
+    # le else avec numero_facture = 0 inutile, mais j'imagine que c'est comme ça que tu voulais
+    # gérer le cas où la première facture n'a pas encore été générée
     if request.POST:
         emetteur_facture = request.POST.get("emetteur_facture")
         if emetteur_facture == "Asso":

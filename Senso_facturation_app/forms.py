@@ -17,3 +17,43 @@ class AddService(forms.Form):
     paiement = forms.CharField(
         label = 'Tu payes comment ?'
     )
+
+class AddCulture(forms.Form):
+
+    type_contenant = forms.ChoiceField(
+        choices = TypeContenantCulturesChoix.choices,
+        label = 'Type de contenant'
+    )
+
+    nom = forms.CharField(
+        label = 'Nom (sans espace)'
+    )
+
+    question = forms.BooleanField(
+        label = 'Souhaites-tu noter une rotation de culture ?',
+        widget = forms.RadioSelect(
+            choices = [
+                ('Oui', 'Oui'),
+                ('Non', 'Non')
+            ],
+            attrs = {'class': 'radio-check'}
+        ),
+        required = False
+    )
+
+    def __init__(self, *args, **kwargs):
+
+        reponse = kwargs.pop('reponse')
+
+        super(AddCulture, self).__init__(*args, **kwargs)
+
+        if reponse == 'Oui':
+            self.fields['phase'] = forms.ChoiceField(
+                choices = PhaseCulturesChoix.choices,
+                required = False,
+            )
+
+            self.fields['phase_date'] = forms.DateField(
+                widget = DatePicker(),
+                required = False
+            )

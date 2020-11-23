@@ -82,6 +82,22 @@ class Client(models.Model):
         verbose_name_plural = "Clients"
 
 
+class Dernier_Numero_Facture(models.Model):
+    id = models.AutoField(primary_key=True)
+    facture_asso = models.IntegerField(
+        verbose_name="Dernier numéro de facture Association",
+        default=0,
+        null=True,
+        blank=True,
+    )
+    facture_senso = models.IntegerField(
+        verbose_name="Dernier numéro de facture Sensoryalis",
+        default=10000,
+        null=True,
+        blank=True,
+    )
+
+
 class Facture(models.Model):
     id = models.AutoField(primary_key=True)
     emetteur = models.CharField(
@@ -99,18 +115,6 @@ class Facture(models.Model):
         blank=True,
     )
     personnes = models.ManyToManyField("Personne", through="Personne_Facture")
-    dernier_numero_facture_asso = models.IntegerField(
-        verbose_name="Dernier numéro de facture Association",
-        default=0,
-        null=True,
-        blank=True,
-    )
-    dernier_numero_facture_senso = models.IntegerField(
-        verbose_name="Dernier numéro de facture Sensoryalis",
-        default=10000,
-        null=True,
-        blank=True,
-    )
     numero_facture = models.CharField(
         verbose_name="Numéro de la facture", max_length=30, null=True, blank=True
     )

@@ -100,13 +100,31 @@ def CalculerTotaux(facture):
 def index(request):
     template_name = "webpages/index.html"
 
-    form = AddFacture(request.POST or None, reponse=request.POST.get("question"))
+    if request.POST:
+        emetteur_facture = request.POST.get("emetteur_facture")
+        if emetteur_facture == "Asso":
+            numero_facture = str(
+                Dernier_Numero_Facture.objects.all()[0].facture_asso + 1
+            )
+        elif emetteur_facture == "Senso":
+            numero_facture = str(
+                Dernier_Numero_Facture.objects.all()[0].facture_senso + 1
+            )
+        else:
+            numero_facture = "0"
+    else:
+        numero_facture = "0"
 
-    # models = [Culture, PhaseCulture]
+    form = AddFacture(
+        request.POST or None,
+        reponse=request.POST.get("question"),
+        numero_facture=numero_facture,
+    )
 
     fields = [
         "emetteur_facture",
         "client",
+        "numero_facture",
         "numero_commande",
         "date_arrivee",
         "date_depart",
@@ -123,7 +141,7 @@ def index(request):
 
     context = {"form": form}
 
-    if request.POST.get("question") == "Oui":
+    """
         for field in fields:
             if request.POST.get(field) != None:
                 request.session.update({field: request.POST.get(field)})
@@ -131,6 +149,7 @@ def index(request):
                 pass
 
         data = {key: value for key, value in request.session.items() if key in fields}
+    """
 
     """
     factures = Facture.objects.all()

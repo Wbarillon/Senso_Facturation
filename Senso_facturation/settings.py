@@ -70,7 +70,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-             BASE_DIR / 'Senso_facturation_app/templates/Senso_facturation_app'
+            BASE_DIR / 'Senso_facturation_app/templates/Senso_facturation_app'
         ],
         'APP_DIRS': True,
         'OPTIONS': {

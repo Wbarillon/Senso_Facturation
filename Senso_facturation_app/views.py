@@ -153,26 +153,37 @@ def index(request):
         data = {key: value for key, value in request.session.items() if key in fields}
     """
 
-    """
-    factures = Facture.objects.all()
-    facture = factures[0]
-    context = CalculerTotaux(facture)
-
-    context = {
-        "numFacture": numFacture,
-        "totalHt": totalHt,
-        "totalTaxes": totalTaxes,
-        "total": total,
-    }
-    """
-
     return render(request, template_name, context)
 
 
 def test(request):
+
     template_name = "webpages/test.html"
 
+    """
     context = {"name": "Nathalie Guillaume", "date": "2020-11-12"}
     pdf = render_to_pdf(template_name, context)
 
     return HttpResponse(pdf, content_type="application/pdf")
+    """
+
+    factures = Facture.objects.all()
+    facture = factures[0]
+    context = CalculerTotaux(facture)
+
+    client = Client.objects.filter(nom_client="Client 1")[0]
+
+    numFactures = []
+    for facture in client.factures.all():
+        numFactures.append(facture.numero_facture)
+    if len(numFactures) == 0:
+        facturesClient = "Aucune facture"
+    else:
+        facturesClient = ", ".join(numFactures)
+
+    context["nom_client"] = client.nom_client
+    context["mail_client"] = client.mail_client
+    context["adresse_client"] = client.adresse_client
+    context["factures_client"] = facturesClient
+
+    return render(request, template_name, context)

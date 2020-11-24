@@ -203,6 +203,7 @@ class Personne(models.Model):
     alimentation = models.TextField(verbose_name="Alimentation", null=True, blank=True)
     medicament = models.TextField(verbose_name="Médicament", null=True, blank=True)
     remarques = models.TextField(verbose_name="Remarques", null=True, blank=True)
+    factures = models.ManyToManyField("Facture", through="Personne_Facture")
 
     def __str__(self):
         return self.prenom_personne + " " + self.nom_personne
@@ -327,6 +328,9 @@ class Taxe(models.Model):
     )
     montant_fixe = models.DecimalField(
         verbose_name="Montant", max_digits=4, decimal_places=2, null=True, blank=True
+    )
+    services_produits = models.ManyToManyField(
+        "Service_Produit", through="Taxe_Service_Produit"
     )
 
     def __str__(self):

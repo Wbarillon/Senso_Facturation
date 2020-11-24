@@ -2,63 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-"""
-Un produit ou un service manque ? Il suffit de le créer.
-forms => AddProduct / AddService
-
-La facture est générée à partir des informations issues de la requête suivante :
-SELECT *
-FROM Commande
-WHERE Personne = id / nom_personne
-AND commande_date = la date
-
-ou, si c'est dans le cadre d'un séjour avec hébergement :
-AND arrivee_date = la date
-
-Globalement, la facture c'est lié à une personne dans le temps. Et "indirectement", on chope les commandes et l'hebergement.
-
-Parmi les services, il y a location d'une salle sur une durée (une semaine). Ça va où ?
-Il y a service salle_activite_semaine et salle_activite_we.
-
-
-Personne
-id
-nom_personne
-naissance_date
-alimentation
-medicament
-remarques
-
-Incertitude sur la tva. A priori c'est juste un entier mais il y a peut-être plusieurs taxes pour un même service ?
-
-Taxe
-id
-nom
-initiales
-taux
-
-Service_Produit
-id
-id_taxe
-nom
-type (repas, chambre, salle, vente à emporter, vente sur place...)
-prix
-
-Commande
-id
-id_personne
-id_service_produit
-arrhes (non ou le prix)
-commande_date
-
-Sejour
-id
-id_commande
-arrivee_date
-depart_date
-"""
-
-
 class Client(models.Model):
     id = models.AutoField(primary_key=True)
     nom_client = models.CharField(
@@ -203,7 +146,6 @@ class Personne(models.Model):
     alimentation = models.TextField(verbose_name="Alimentation", null=True, blank=True)
     medicament = models.TextField(verbose_name="Médicament", null=True, blank=True)
     remarques = models.TextField(verbose_name="Remarques", null=True, blank=True)
-    factures = models.ManyToManyField("Facture", through="Personne_Facture")
 
     def __str__(self):
         return self.prenom_personne + " " + self.nom_personne
@@ -328,9 +270,6 @@ class Taxe(models.Model):
     )
     montant_fixe = models.DecimalField(
         verbose_name="Montant", max_digits=4, decimal_places=2, null=True, blank=True
-    )
-    services_produits = models.ManyToManyField(
-        "Service_Produit", through="Taxe_Service_Produit"
     )
 
     def __str__(self):

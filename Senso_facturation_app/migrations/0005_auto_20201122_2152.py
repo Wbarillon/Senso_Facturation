@@ -16,11 +16,6 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(through='Senso_facturation_app.Personne_Facture', to='Senso_facturation_app.Personne'),
         ),
         migrations.AddField(
-            model_name='facture',
-            name='services_produits',
-            field=models.ManyToManyField(through='Senso_facturation_app.Service_Produit_Commande', to='Senso_facturation_app.Service_Produit'),
-        ),
-        migrations.AddField(
             model_name='service_produit',
             name='taxes',
             field=models.ManyToManyField(through='Senso_facturation_app.Taxe_Service_Produit', to='Senso_facturation_app.Taxe'),

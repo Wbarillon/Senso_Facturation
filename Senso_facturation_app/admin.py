@@ -36,14 +36,21 @@ class FactureResource(ImportExportModelAdmin):
         "numero_commande",
         "date_arrivee",
         "date_depart",
-        "montant_paiement_arrhes",
-        "modes_paiement_arrhes",
-        "date_paiement_arrhes",
-        "montant_paiement_solde",
-        "modes_paiement_solde",
-        "date_paiement_solde",
-        "total",
+        "nombre_jours",
         "remarques",
+    ]
+
+
+@admin.register(Paiement)
+class PaiementResource(ImportExportModelAdmin):
+    list_display = [
+        "id",
+        "service_produit_commande",
+        "montant_paiement_arrhes",
+        "montant_paiement_solde",
+        "mode_paiement",
+        "numero_cheque",
+        "date_paiement",
     ]
 
 

@@ -167,6 +167,7 @@ def test(request):
     return HttpResponse(pdf, content_type="application/pdf")
     """
 
+    """
     factures = Facture.objects.all()
     facture = factures[0]
     context = CalculerTotaux(facture)
@@ -185,5 +186,22 @@ def test(request):
     context["mail_client"] = client.mail_client
     context["adresse_client"] = client.adresse_client
     context["factures_client"] = facturesClient
+
+    """
+
+    facture = Facture()
+    facture.id = 4
+    facture.numero_facture = "Facture 2"
+    facture.numero_commande = "Commande 2"
+
+    print("facture.id =", facture.id)
+
+    facture.save()
+    print("facture.id =", facture.id)
+
+    facture.save()
+    print("facture.id =", facture.id)
+
+    context = {}
 
     return render(request, template_name, context)

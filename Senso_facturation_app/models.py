@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 
+
 class Client(models.Model):
     id = models.AutoField(primary_key=True)
     nom_client = models.CharField(
@@ -71,39 +72,6 @@ class Facture(models.Model):
     nombre_jours = models.IntegerField(
         verbose_name="Nombre de jours", null=True, blank=True
     )
-    montant_paiement_arrhes = models.DecimalField(
-        verbose_name="Montant des arrhes",
-        max_digits=8,
-        decimal_places=2,
-        null=True,
-        blank=True,
-    )
-    modes_paiement_arrhes = models.TextField(
-        verbose_name="Modes de paiement des arrhes", null=True, blank=True
-    )
-    date_paiement_arrhes = models.DateField(
-        verbose_name="Date de paiement des arrhes", null=True, blank=True
-    )
-    montant_paiement_solde = models.DecimalField(
-        verbose_name="Montant du solde",
-        max_digits=8,
-        decimal_places=2,
-        null=True,
-        blank=True,
-    )
-    modes_paiement_solde = models.TextField(
-        verbose_name="Modes de paiement du solde", null=True, blank=True
-    )
-    date_paiement_solde = models.DateField(
-        verbose_name="Date de paiement du solde", null=True, blank=True
-    )
-    total = models.DecimalField(
-        verbose_name="Total Facture",
-        max_digits=8,
-        decimal_places=2,
-        null=True,
-        blank=True,
-    )
     remarques = models.TextField(verbose_name="Remarques", null=True, blank=True)
 
     def __str__(self):
@@ -118,6 +86,69 @@ class Facture(models.Model):
     class Meta:
         verbose_name = "Facture"
         verbose_name_plural = "Factures"
+
+
+class Paiement(models.Model):
+    id = models.AutoField(primary_key=True)
+    service_produit_commande = models.ForeignKey(
+        "Service_Produit_Commande",
+        on_delete=models.PROTECT,
+        verbose_name="Service/Produit commandé",
+        related_name="paiements",
+        null=True,
+        blank=True,
+    )
+    montant_paiement_arrhes = models.DecimalField(
+        verbose_name="Montant des arrhes",
+        max_digits=8,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    montant_paiement_solde = models.DecimalField(
+        verbose_name="Montant du solde",
+        max_digits=8,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    mode_paiement = models.CharField(
+        verbose_name="Mode de paiement",
+        max_length=30,
+        choices=[
+            ("", ""),
+            ("Chèque", "Chèque"),
+            ("Chèques Vacances", "Chèques Vacances"),
+            ("Carte de Crédit", "Carte de Crédit"),
+            ("Carte Tickets Restaurant", "Carte Tickets Restaurant"),
+            ("Liquide", "Liquide"),
+            ("Tickets Restaurant", "Tickets Restaurant"),
+            ("Virement Bancaire", "Virement Bancaire"),
+        ],
+        null=True,
+        blank=True,
+    )
+    numero_cheque = models.CharField(
+        verbose_name="Numéro du chèque",
+        max_length=20,
+        null=True,
+        blank=True,
+    )
+    date_paiement = models.DateField(
+        verbose_name="Date de paiement", null=True, blank=True
+    )
+
+    def __str__(self):
+        return (
+            self.service_produit_commande.service_produit.nom_service_produit
+            + " ("
+            + str(self.date_paiement)
+            + ")"
+        )
+
+    class Meta:
+        verbose_name = "Paiement"
+        verbose_name_plural = "Paiements"
 
 
 class Personne(models.Model):
@@ -208,7 +239,7 @@ class Service_Produit_Commande(models.Model):
     service_produit = models.ForeignKey(
         "Service_Produit",
         on_delete=models.PROTECT,
-        verbose_name="Service commandé",
+        verbose_name="Service/Produit",
         null=True,
         blank=True,
     )
@@ -234,6 +265,14 @@ class Service_Produit_Commande(models.Model):
     date_commande = models.DateField(
         verbose_name="Date de commande", null=True, blank=True
     )
+
+    def __str__(self):
+        return (
+            self.service_produit.nom_service_produit
+            + " (Facture "
+            + self.facture.numero_facture
+            + ")"
+        )
 
     class Meta:
         verbose_name = "Service/Produit commandé"

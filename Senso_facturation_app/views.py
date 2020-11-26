@@ -34,7 +34,7 @@ def update(request):
         return HttpResponse("Couldn't update the code on PythonAnywhere")
 
 
-def CalculerTotaux(facture):
+def CalculerTotauxFacture(facture):
     total = 0
     totalHt = 0
     totalTaxes = 0
@@ -95,6 +95,41 @@ def CalculerTotaux(facture):
     }
 
     return resultat
+
+
+def CalculerTotauxParTva(facture):
+    dicoTaxesTva = {}
+
+    cleTaux = "Taux"
+    cleTotalHt = "Total HT"
+    cleTotalTaxe = "Total Taxe"
+
+    servicesCommandes = Service_Produit_Commande.objects.filter(facture_id=facture.id)
+    for serviceCommande in servicesCommandes:
+        for taxe in serviceCommande.service_produit.taxes.all():
+            if taxe.initiales[0:3].upper() == "TVA":
+                if not taxe.nom_taxe in dicoTaxesTva.keys():
+                    dicoTaxesTva[taxe.nom_taxe] = {}
+                    dicoTaxesTva[taxe.nom_taxe][cleTaux] = taxe.taux
+                    dicoTaxesTva[taxe.nom_taxe][cleTotalHt] = 0
+                    dicoTaxesTva[taxe.nom_taxe][cleTotalTaxe] = 0
+
+    if len(dicoTaxesTva) == 0:
+        return {}
+
+    for serviceCommande in servicesCommandes:
+        for taxe in serviceCommande.service_produit.taxes.all():
+            if taxe.nom_taxe in dicoTaxesTva.keys():
+                dicoTaxesTva[taxe.nom_taxe][cleTotalHt] += (
+                    serviceCommande.prix_total_ht - serviceCommande.remise
+                )
+
+    for taxeTva in dicoTaxesTva.keys():
+        dicoTaxesTva[taxeTva][cleTotalTaxe] = round(
+            dicoTaxesTva[taxeTva][cleTotalHt] * dicoTaxesTva[taxeTva][cleTaux] / 100, 2
+        )
+
+    return dicoTaxesTva
 
 
 def index(request):
@@ -170,7 +205,7 @@ def test(request):
     """
     factures = Facture.objects.all()
     facture = factures[0]
-    context = CalculerTotaux(facture)
+    context = CalculerTotauxFacture(facture)
 
     client = Client.objects.filter(nom_client="Client 1")[0]
 
@@ -189,19 +224,10 @@ def test(request):
 
     """
 
-    facture = Facture()
-    facture.id = 4
-    facture.numero_facture = "Facture 2"
-    facture.numero_commande = "Commande 2"
+    facture = Facture.objects.filter(numero_facture="Facture 2")
 
-    print("facture.id =", facture.id)
+    resultat = CalculerTotauxParTva(facture[0])
 
-    facture.save()
-    print("facture.id =", facture.id)
-
-    facture.save()
-    print("facture.id =", facture.id)
-
-    context = {}
+    context = {"dicoTaxesTva": resultat}
 
     return render(request, template_name, context)

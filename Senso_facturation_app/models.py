@@ -266,14 +266,6 @@ class Service_Produit_Commande(models.Model):
         verbose_name="Date de commande", null=True, blank=True
     )
 
-    def __str__(self):
-        return (
-            self.service_produit.nom_service_produit
-            + " (Facture "
-            + self.facture.numero_facture
-            + ")"
-        )
-
     class Meta:
         verbose_name = "Service/Produit commandé"
         verbose_name_plural = "Services/Produits commandés"

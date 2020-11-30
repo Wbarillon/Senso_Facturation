@@ -17,15 +17,6 @@ class ClientResource(ImportExportModelAdmin):
     ]
 
 
-@admin.register(Dernier_Numero_Facture)
-class Dernier_Numero_FactureResource(ImportExportModelAdmin):
-    list_display = [
-        "id",
-        "facture_asso",
-        "facture_senso",
-    ]
-
-
 @admin.register(Facture)
 class FactureResource(ImportExportModelAdmin):
     list_display = [
@@ -46,8 +37,8 @@ class PaiementResource(ImportExportModelAdmin):
     list_display = [
         "id",
         "service_produit_commande",
-        "montant_paiement_arrhes",
-        "montant_paiement_solde",
+        "montant_paiement",
+        "type_paiement",
         "mode_paiement",
         "numero_cheque",
         "date_paiement",

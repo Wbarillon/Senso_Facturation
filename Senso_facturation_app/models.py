@@ -24,6 +24,7 @@ class Client(models.Model):
     class Meta:
         verbose_name = "Client"
         verbose_name_plural = "Clients"
+        ordering = ["nom_client"]
 
 
 class Dernier_Numero_Facture(models.Model):
@@ -49,6 +50,8 @@ class Facture(models.Model):
         max_length=20,
         choices=[("", ""), ("Asso", "Association"), ("Senso", "Sensoryalis")],
         default="",
+        null=True,
+        blank=True,
     )
     client = models.ForeignKey(
         "Client",
@@ -98,19 +101,18 @@ class Paiement(models.Model):
         null=True,
         blank=True,
     )
-    montant_paiement_arrhes = models.DecimalField(
-        verbose_name="Montant des arrhes",
+    montant_paiement = models.DecimalField(
+        verbose_name="Montant du paiement",
         max_digits=8,
         decimal_places=2,
         null=True,
         blank=True,
     )
-    montant_paiement_solde = models.DecimalField(
-        verbose_name="Montant du solde",
-        max_digits=8,
-        decimal_places=2,
-        null=True,
-        blank=True,
+    type_paiement = models.CharField(
+        verbose_name="Type de paiement",
+        max_length=10,
+        choices=[("", ""), ("Arrhes", "Arrhes"), ("Solde", "Solde")],
+        default="",
     )
     mode_paiement = models.CharField(
         verbose_name="Mode de paiement",
@@ -184,6 +186,7 @@ class Personne(models.Model):
     class Meta:
         verbose_name = "Personne"
         verbose_name_plural = "Personnes"
+        ordering = ["nom_personne", "prenom_personne"]
 
 
 class Personne_Facture(models.Model):
@@ -227,11 +230,12 @@ class Service_Produit(models.Model):
     taxes = models.ManyToManyField("Taxe", through="Taxe_Service_Produit")
 
     def __str__(self):
-        return self.nom_service_produit
+        return self.nom_service_produit + " (" + self.type_service_produit + ")"
 
     class Meta:
         verbose_name = "Service/Produit"
         verbose_name_plural = "Services/Produits"
+        ordering = ["type_service_produit", "nom_service_produit"]
 
 
 class Service_Produit_Commande(models.Model):
@@ -265,6 +269,14 @@ class Service_Produit_Commande(models.Model):
     date_commande = models.DateField(
         verbose_name="Date de commande", null=True, blank=True
     )
+
+    def __str__(self):
+        return (
+            "Facture "
+            + self.facture.numero_facture
+            + " : "
+            + self.service_produit.nom_service_produit
+        )
 
     class Meta:
         verbose_name = "Service/Produit commandé"
@@ -309,6 +321,7 @@ class Taxe(models.Model):
     class Meta:
         verbose_name = "Taxe"
         verbose_name_plural = "Taxes"
+        ordering = ["nom_taxe"]
 
 
 class Taxe_Service_Produit(models.Model):
@@ -331,3 +344,4 @@ class Taxe_Service_Produit(models.Model):
     class Meta:
         verbose_name = "Taxe/Service/produit"
         verbose_name_plural = "Taxes/Services/Produits"
+        ordering = ["service_produit", "taxe"]

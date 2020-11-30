@@ -33,6 +33,29 @@ def update(request):
     else:
         return HttpResponse("Couldn't update the code on PythonAnywhere")
 
+def accueil(request):
+    template_name = 'webpages/accueil.html'
+
+    form = PlageDateFacture(request.POST or None)
+    
+    context = {
+        'form': form
+    }
+
+    print(request.POST)
+
+    date_arrivee = dt.strptime(request.POST.get('date_arrivee'), '%d-%m-%Y').strftime('%Y-%m-%d')
+    date_depart = dt.strptime(request.POST.get('date_depart'), '%d-%m-%Y').strftime('%Y-%m-%d')
+
+
+
+    data = Facture.objects.filter(date_arrivee__lte = date_arrivee).filter(date_depart__gte = date_depart)
+
+    if list(data):
+        context.update({'data': data})
+
+    return render(request, template_name, context)
+
 def index(request):
     # Utilisation d'un modelformset comme sur la vidéo https://www.youtube.com/watch?v=JIvJL1HizP4
     # Implique que les modèles soient clean
@@ -161,6 +184,7 @@ def test(request):
 
     return HttpResponse(pdf, content_type = 'application/pdf')
 
+'''
 def ajout_culture(request):
     template_name = 'forms/one_step_form.html'
 
@@ -259,3 +283,4 @@ def ajout_culture(request):
         return redirect('etat_jardin')
 
     return render(request, template_name, context)
+'''

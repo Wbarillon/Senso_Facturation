@@ -5,6 +5,22 @@ from .models import *
 
 # Register your models here.
 
+@admin.register(Facture)
+class FactureResource(ImportExportModelAdmin):
+    pass
+
+@admin.register(Client)
+class ClientResource(ImportExportModelAdmin):
+    pass
+
+@admin.register(Personne)
+class PersonneResource(ImportExportModelAdmin):
+    pass
+
+@admin.register(Personne_Facture)
+class Personne_FactureResource(ImportExportModelAdmin):
+    pass
+
 '''
 @admin.register(Personne)
 class PersonneResource(ImportExportModelAdmin):

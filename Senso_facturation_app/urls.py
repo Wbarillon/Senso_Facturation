@@ -3,7 +3,8 @@ from Senso_facturation_app import views
 
 webpages_patterns = [
     path('', views.index, name = 'index'),
-    path('test', views.test, name = 'test')
+    path('test', views.test, name = 'test'),
+    path('accueil', views.accueil, name = 'accueil')
 ]
 
 forms_patterns = [

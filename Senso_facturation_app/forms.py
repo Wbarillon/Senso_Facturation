@@ -18,6 +18,18 @@ class AddService(forms.Form):
         label = 'Tu payes comment ?'
     )
 
+# formulaire avec des champs de facture
+class PlageDateFacture(forms.ModelForm):
+
+    class Meta:
+        model = Facture
+        fields = ['date_arrivee', 'date_depart']
+        widgets = {
+            'date_arrivee': DatePicker(),
+            'date_depart': DatePicker()
+        }
+
+'''
 class AddCulture(forms.Form):
 
     type_contenant = forms.ChoiceField(
@@ -74,3 +86,4 @@ class ActualiserCulture(forms.ModelForm):
             ),
             'phase_date': DatePicker()
         }
+'''

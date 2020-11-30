@@ -8,61 +8,27 @@ from .models import *
 DatePicker = partial(forms.DateInput, {"class": "datepicker"})
 
 
-class AddFacture(forms.Form):
+class AjouterFacture(forms.Form):
 
     emetteur_facture = forms.ChoiceField(
         choices=[("", ""), ("Asso", "Association"), ("Senso", "Sensoryalis")],
         label="Emetteur de la facture",
     )
 
-    # Gérer par le template
     clients = Client.objects.all()
-    '''
-    choice_clients = []
+    choice_clients = [("", "")]
     for client in clients:
-        choice_clients.append((Client.id, Client.nom_client))
+        choice_clients.append((client.id, client.nom_client))
     client = forms.ChoiceField(choices=choice_clients, label="Client")
-    '''
 
-    numero_facture = forms.CharField(
-        label="Numéro de la facture", max_length=30, disabled=True
-    )
     numero_commande = forms.CharField(label="Numéro de la commande", max_length=50)
 
-    date_arrivee = forms.DateField(label="Date d'arrivée")
+    date_arrivee = forms.DateField(label="Date d'arrivée", widget=DatePicker())
 
-    date_depart = forms.DateField(label="Date de départ")
-
-    nb_jours = forms.IntegerField(label="Nombre de jours")
-
-    montant_arrhes = forms.DecimalField(label="Montant des arrhes", decimal_places=2)
-    modes_paiement_arrhes = forms.CharField(
-        widget=forms.Textarea, label="Modes de paiement des arrhes"
-    )
-    date_paiement_arrhes = forms.DateField(label="Date de paiement des arrhes")
-
-    montant_solde = forms.DecimalField(label="Montant du solde", decimal_places=2)
-    modes_paiement_solde = forms.CharField(
-        widget=forms.Textarea, label="Modes de paiement du solde"
-    )
-    date_paiement_solde = forms.DateField(label="Date de paiement du solde")
+    date_depart = forms.DateField(label="Date de départ", widget=DatePicker())
 
     remarques = forms.CharField(widget=forms.Textarea, label="Remarques")
 
-    question = forms.BooleanField(
-        label="Voulez-vous générer un numéro de facture ?",
-        widget=forms.RadioSelect(
-            choices=[("Oui", "Oui"), ("Non", "Non")], attrs={"class": "radio-check"}
-        ),
-        required=False,
-    )
-
     def __init__(self, *args, **kwargs):
 
-        reponse = kwargs.pop("reponse")
-        numero_facture = kwargs.pop("numero_facture")
-
-        super(AddFacture, self).__init__(*args, **kwargs)
-
-        if reponse == "Oui":
-            self.fields["numero_facture"].initial = numero_facture
+        super(AjouterFacture, self).__init__(*args, **kwargs)

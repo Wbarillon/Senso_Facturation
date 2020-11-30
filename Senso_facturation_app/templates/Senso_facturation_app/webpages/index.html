@@ -2,10 +2,14 @@
 
 {% block content %}
 <main id="index-main">
+    {% if etape == "Création facture" %}
     <form action="/" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <p><button type="Submit">Submit</button></p>
+        <p><button type="Submit">Générer facture</button></p>
     </form>
+    {% elif etape == "Facture enregistrée" %}
+    <p>La facture {{ numeroFacture }} de l'émetteur {{ emetteurFacture }} a été créée.</p>
+    {% endif %}
 </main>
 {% endblock %}

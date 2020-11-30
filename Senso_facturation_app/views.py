@@ -13,8 +13,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from .forms import *
 
-# Create your views here.
-
 # webhook Github
 @csrf_exempt
 def update(request):
@@ -135,29 +133,6 @@ def CalculerTotauxParTva(facture):
 def index(request):
     template_name = "webpages/index.html"
 
-    # le else avec numero_facture = 0 inutile, mais j'imagine que c'est comme ça que tu voulais
-    # gérer le cas où la première facture n'a pas encore été générée
-    if request.POST:
-        emetteur_facture = request.POST.get("emetteur_facture")
-        if emetteur_facture == "Asso":
-            numero_facture = str(
-                Dernier_Numero_Facture.objects.all()[0].facture_asso + 1
-            )
-        elif emetteur_facture == "Senso":
-            numero_facture = str(
-                Dernier_Numero_Facture.objects.all()[0].facture_senso + 1
-            )
-        else:
-            numero_facture = "0"
-    else:
-        numero_facture = "0"
-
-    form = AddFacture(
-        request.POST or None,
-        reponse=request.POST.get("question"),
-        numero_facture=numero_facture,
-    )
-
     fields = [
         "emetteur_facture",
         "client",
@@ -165,28 +140,53 @@ def index(request):
         "numero_commande",
         "date_arrivee",
         "date_depart",
-        "nb_jours",
-        "montant_arrhes",
-        "modes_paiement_arrhes",
-        "date_paiement_arrhes",
-        "montant_solde",
-        "modes_paiement_solde",
-        "date_paiement_solde",
         "remarques",
-        "question",
     ]
 
-    context = {"form": form}
 
-    """
+    if request.POST:
+        """
         for field in fields:
             if request.POST.get(field) != None:
                 request.session.update({field: request.POST.get(field)})
             else:
                 pass
+        """
+        data = {key: value for key, value in request.POST.items() if key in fields}
 
-        data = {key: value for key, value in request.session.items() if key in fields}
-    """
+        dernierNumeroFacture = Dernier_Numero_Facture.objects.all()[0]
+        if data["emetteur_facture"] == "Asso":
+            dernierNumeroFacture.facture_asso += 1
+            numeroFacture = str(dernierNumeroFacture.facture_asso)
+        elif data["emetteur_facture"] == "Senso":
+            dernierNumeroFacture.facture_senso += 1
+            numeroFacture = str(dernierNumeroFacture.facture_senso)
+
+        dateArrivee = dt.strptime(data["date_arrivee"], "%d-%m-%Y")
+        dateDepart = dt.strptime(data["date_depart"], "%d-%m-%Y")
+        nombreJours = (dateDepart - dateArrivee).days + 1
+
+        facture = Facture()
+        facture.emetteur = data["emetteur_facture"]
+        facture.client = Client.objects.filter(id=data["client"])[0]
+        facture.numero_facture = numeroFacture
+        facture.numero_commande = data["numero_commande"]
+        facture.date_arrivee = dateArrivee
+        facture.date_depart = dateDepart
+        facture.nombre_jours = nombreJours
+        facture.remarques = data["remarques"]
+
+        facture.save()
+        dernierNumeroFacture.save()
+
+        context = {
+            "etape": "Facture enregistrée",
+            "emetteurFacture": data["emetteur_facture"],
+            "numeroFacture": numeroFacture,
+        }
+    else:
+        form = AjouterFacture(request.POST or None)
+        context = {"form": form, "etape": "Création facture"}
 
     return render(request, template_name, context)
 

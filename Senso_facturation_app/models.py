@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -6,7 +7,7 @@ from django.db import models
 class Client(models.Model):
     id = models.AutoField(primary_key=True)
     nom_client = models.CharField(
-        verbose_name="Nom", max_length=50, null=True, blank=True
+        verbose_name="Nom", max_length=50, unique=True, default=""
     )
     adresse_client = models.CharField(
         verbose_name="Adresse", max_length=200, null=True, blank=True
@@ -80,12 +81,6 @@ class Facture(models.Model):
     def __str__(self):
         return self.numero_facture
 
-    def generer_numero_facture(self):
-        if self.emetteur == "Asso":
-            self.numero_facture = self.dernier_numero_facture_asso + 1
-        elif self.emetteur == "Senso":
-            self.numero_facture = self.dernier_numero_facture_senso + 1
-
     class Meta:
         verbose_name = "Facture"
         verbose_name_plural = "Factures"
@@ -155,12 +150,8 @@ class Paiement(models.Model):
 
 class Personne(models.Model):
     id = models.AutoField(primary_key=True)
-    nom_personne = models.CharField(
-        verbose_name="Nom", max_length=50, null=True, blank=True
-    )
-    prenom_personne = models.CharField(
-        verbose_name="Prénom", max_length=50, null=True, blank=True
-    )
+    nom_personne = models.CharField(verbose_name="Nom", max_length=50, default="")
+    prenom_personne = models.CharField(verbose_name="Prénom", max_length=50, default="")
     date_naissance = models.DateField(
         verbose_name="Date de naissance", null=True, blank=True
     )
@@ -186,6 +177,7 @@ class Personne(models.Model):
     class Meta:
         verbose_name = "Personne"
         verbose_name_plural = "Personnes"
+        unique_together = ("nom_personne", "prenom_personne")
         ordering = ["nom_personne", "prenom_personne"]
 
 
@@ -214,10 +206,10 @@ class Personne_Facture(models.Model):
 class Service_Produit(models.Model):
     id = models.AutoField(primary_key=True)
     nom_service_produit = models.CharField(
-        verbose_name="Nom", max_length=50, null=True, blank=True
+        verbose_name="Nom", max_length=50, unique=True, default=""
     )
     type_service_produit = models.CharField(
-        verbose_name="Type", max_length=50, null=True, blank=True
+        verbose_name="Type", max_length=50, default=""
     )
     # On teste comme ça, si il y a des problèmes d'arrondis, switcher avec un type Float
     prix_unitaire = models.DecimalField(
@@ -286,11 +278,9 @@ class Service_Produit_Commande(models.Model):
 class Taxe(models.Model):
     id = models.AutoField(primary_key=True)
     nom_taxe = models.CharField(
-        verbose_name="Nom", max_length=50, null=True, blank=True
+        verbose_name="Nom", max_length=50, unique=True, default=""
     )
-    initiales = models.CharField(
-        verbose_name="Initiales", max_length=10, null=True, blank=True
-    )
+    initiales = models.CharField(verbose_name="Initiales", max_length=10, default="")
     type_taxe = models.CharField(
         verbose_name="Type de taxe",
         max_length=30,
@@ -317,6 +307,13 @@ class Taxe(models.Model):
 
     def __str__(self):
         return self.nom_taxe
+
+    def clean(self):
+        super().clean()
+        if self.taux is None and self.montant_fixe is None:
+            raise ValidationError(
+                "Un des deux champs <taux> et <montant_fixe> doit impérativement être renseigné."
+            )
 
     class Meta:
         verbose_name = "Taxe"

@@ -15,11 +15,7 @@ class AjouterFacture(forms.Form):
         label="Emetteur de la facture",
     )
 
-    clients = Client.objects.all()
-    choice_clients = [("", "")]
-    for client in clients:
-        choice_clients.append((client.id, client.nom_client))
-    client = forms.ChoiceField(choices=choice_clients, label="Client")
+    client = forms.ChoiceField(label="Client")
 
     numero_commande = forms.CharField(label="Numéro de la commande", max_length=50)
 
@@ -32,3 +28,9 @@ class AjouterFacture(forms.Form):
     def __init__(self, *args, **kwargs):
 
         super(AjouterFacture, self).__init__(*args, **kwargs)
+
+        clients = Client.objects.all()
+        choice_clients = [("", "")]
+        for client in clients:
+            choice_clients.append((client.id, client.nom_client))
+        self.fields["client"].choices = choice_clients
